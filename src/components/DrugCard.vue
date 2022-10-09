@@ -599,15 +599,22 @@ export default {
         "https://youtu.be/",
         ""
       );
-      let positionTop = window.scrollY || document.documentElement.scrollTop;
-      document.body.className = "overflow";
-
+      let positionTop = window.pageYOffset;
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
       document.body.style.top = `-${positionTop}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
     },
     modalVisibleControl() {
       this.modalVisible = false;
-      document.body.classList.remove("overflow");
-      document.body.style.top = `${this.positionTop}px`;
+
+      document.body.style.removeProperty("overflow");
+      document.body.style.removeProperty("position");
+      document.body.style.removeProperty("top");
+      document.body.style.removeProperty("left");
+      document.body.style.removeProperty("right");
+      window.scrollTo(0, 400);
     },
   },
 };
@@ -630,12 +637,12 @@ div {
   box-sizing: border-box;
 }
 
-.overflow {
+/* .overflow {
   overflow: hidden;
   height: 100%;
   width: 100%;
   position: fixed;
-}
+} */
 /* header */
 .header {
   display: flex;
@@ -788,7 +795,7 @@ div {
 .drug_check,
 .drug_diff {
   position: absolute;
-  bottom: 38px;
+  bottom: 36px;
   right: 6px;
   border: 1px solid rgb(209, 209, 209);
   padding: 0px 6px;

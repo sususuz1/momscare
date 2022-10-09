@@ -158,11 +158,11 @@
               치과 발치, 내시경, 수술 전 며칠 중단할지 <br />처방의사에게
               확인하세요.
             </div>
-            <div class="modal_url" v-if="item.drug_url">
+            <div class="modal_url" v-if="item.DURL">
               <iframe
                 width="359"
                 height="280"
-                :src="`https://www.youtube.com/embed/${item.drug_url}`"
+                :src="`https://www.youtube.com/embed/${item.DURL}`"
                 title="YouTube video player"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -199,6 +199,31 @@
 <script>
 // import axios from "axios";
 export default {
+  props: ["item"],
+  methods: {
+    openModal(data, i) {
+      this.modalIndex = i;
+      this.modalData = data;
+      this.modalVisible = true;
+      this.data2[i].DURL = this.data2[i].DURL.replace("https://youtu.be/", "");
+      let positionTop = window.pageYOffset;
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${positionTop}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+    },
+    modalVisibleControl() {
+      this.modalVisible = false;
+
+      document.body.style.removeProperty("overflow");
+      document.body.style.removeProperty("position");
+      document.body.style.removeProperty("top");
+      document.body.style.removeProperty("left");
+      document.body.style.removeProperty("right");
+      window.scrollTo(0, 400);
+    },
+  },
   mounted() {
     window.scrollTo(0, 0);
 
@@ -223,6 +248,7 @@ export default {
       "DDAY",
       "DINFO",
       "DASMET",
+      "DURL",
     ];
     var regex = /[^0-9]/g;
     Object.keys(apiData).map((data) => {
@@ -283,6 +309,7 @@ export default {
               DNAME0: "아스피린프로텍트(pantoprazole위산분비억제제)",
               DINFO0: "항혈소판제",
               DASMET0: "aspirin",
+              DURL0: "",
               DQUANTITY0: 1,
               DCOUNT0: 1,
               DDAY0: 56,
@@ -291,6 +318,7 @@ export default {
               DNAME1: "가스티인씨알정15(mosapride기능성소화)",
               DINFO1: "테스트1",
               DASMET1: "",
+              DURL1: "",
               DQUANTITY1: 1,
               DCOUNT1: 1,
               DDAY1: 56,
@@ -299,6 +327,7 @@ export default {
               DNAME2: "메트포민서방정(rebamipide위점막보호)",
               DINFO2: "테스트2",
               DASMET2: "metformin",
+              DURL2: "",
               DQUANTITY2: 1,
               DCOUNT2: 2,
               DDAY2: 56,
@@ -307,16 +336,21 @@ export default {
               DNAME3: "액사딘캡슐150(nizatidine위염)",
               DINFO3: "테스트3",
               DASMET3: "",
+              DURL3: "",
               DQUANTITY3: 1,
               DCOUNT3: 1,
               DDAY3: 56,
               DCHANGE3: "신규추가",
-              DCODE4: "",
-              DNAME4: "",
-              DQUANTITY4: 0,
-              DCOUNT4: 0,
-              DDAY4: 0,
-              DCHANGE4: "",
+              DCODE4: "A6",
+              DNAME4: "쿨프렙산",
+              DINFO4: "테스트4",
+
+              DASMET4: "",
+              DURL4: "https://youtu.be/H_GdJo8ScC0?t=75",
+              DQUANTITY4: 1,
+              DCOUNT4: 1,
+              DDAY4: 1,
+              DCHANGE4: "변화없음",
               DCODE5: "",
               DNAME5: "",
               DQUANTITY5: 0,
@@ -588,34 +622,6 @@ export default {
         },
       ],
     };
-  },
-  props: ["item"],
-  methods: {
-    openModal(data, i) {
-      this.modalIndex = i;
-      this.modalData = data;
-      this.modalVisible = true;
-      this.drugs[i].drug_url = this.drugs[i].drug_url.replace(
-        "https://youtu.be/",
-        ""
-      );
-      let positionTop = window.pageYOffset;
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${positionTop}px`;
-      document.body.style.left = "0";
-      document.body.style.right = "0";
-    },
-    modalVisibleControl() {
-      this.modalVisible = false;
-
-      document.body.style.removeProperty("overflow");
-      document.body.style.removeProperty("position");
-      document.body.style.removeProperty("top");
-      document.body.style.removeProperty("left");
-      document.body.style.removeProperty("right");
-      window.scrollTo(0, 400);
-    },
   },
 };
 </script>

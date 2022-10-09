@@ -54,15 +54,20 @@
           @click="openModal(item, i)"
           v-if="item.DNAME"
         >
-          <div class="redline" v-if="item.drug_as_met == 'aspirin'"></div>
-          <div class="greenline" v-if="item.drug_as_met == 'metformin'"></div>
-          <div class="grayline"></div>
+          <div class="redline" v-if="item.DASMET == 'aspirin'"></div>
+          <div class="greenline" v-if="item.DASMET == 'metformin'"></div>
+          <div class="grayline" v-if="item.DASMET == ''"></div>
           <!-- <div class="drug_img">
             <img :src="require(`../img/${item.drug_img}`)" class="drug_img" />
           </div> -->
           <div class="drug_img">
-            <img :src="require(`../img/${item.DCODE}.jpg`)" class="drug_img" />
+            <img
+              :src="require(`../img/${item.DCODE}.jpg`)"
+              class="drug_img"
+              v-if="item.DCODE"
+            />
           </div>
+
           <!-- <div class="drug_name2">{{ item.DNAME }}</div> -->
           <div class="drug_name">
             &nbsp;&nbsp;&nbsp;{{ item.DNAME }}
@@ -81,10 +86,15 @@
               </div>
             </div>
           </div>
-          <div class="drug_check" v-if="item.drug_check">
-            {{ item.drug_check }}
+          <div class="drug_check" v-if="item.DINFO">
+            {{ item.DINFO }}
           </div>
-          <div class="drug_button">약 설명 보기</div>
+          <div class="drug_diff" v-if="item.DCHANGE">
+            {{ item.DCHANGE }}
+          </div>
+          <div class="comment">
+            사진을 누르면 자세한 설명을 보실 수 있습니다
+          </div>
         </div>
 
         <div
@@ -95,16 +105,16 @@
         >
           <div class="modal" @click="modalVisibleControl()">
             <div class="modal_com_wrap">
-              <div class="drug_item bgc">
+              <div class="drug_item bgc modal_padding">
                 <div
                   class="modal_redline"
-                  v-if="item.drug_as_met == 'aspirin'"
+                  v-if="item.DASMET == 'aspirin'"
                 ></div>
                 <div
                   class="modal_greenline"
-                  v-if="item.drug_as_met == 'metformin'"
+                  v-if="item.DASMET == 'metformin'"
                 ></div>
-                <div class="modal_grayline"></div>
+                <div class="modal_grayline" v-if="item.DASMET == ''"></div>
                 <div class="drug_img">
                   <img
                     :src="require(`../img/${item.DCODE}.jpg`)"
@@ -129,20 +139,24 @@
                     </div>
                   </div>
                 </div>
-                <div class="drug_check" v-if="item.drug_check">
-                  {{ item.drug_check }}
+                <div class="drug_check modal_drug_check" v-if="item.DINFO">
+                  {{ item.DINFO }}
                 </div>
-                <div class="drug_button drug_diff" v-if="item.drug_diff">
-                  {{ item.drug_diff }}
+                <div
+                  class="drug_button drug_diff modal_drug_diff"
+                  v-if="item.DCHANGE"
+                >
+                  {{ item.DCHANGE }}
                 </div>
               </div>
             </div>
-            <div class="metformin" v-if="item.drug_as_met == 'metformin'">
+            <div class="metformin" v-if="item.DASMET == 'metformin'">
               조영제 사용 검사시 <br />이 약의 투여사실을 의료진에게 미리
               알리세요.
             </div>
-            <div class="aspirin" v-if="item.drug_as_met == 'aspirin'">
-              치과 치료, 내시경 검사시 ... 까먹음..
+            <div class="aspirin" v-if="item.DASMET == 'aspirin'">
+              치과 발치, 내시경, 수술 전 며칠 중단할지 <br />처방의사에게
+              확인하세요.
             </div>
             <div class="modal_url" v-if="item.drug_url">
               <iframe
@@ -207,6 +221,8 @@ export default {
       "DCOUNT",
       "DCHANGE",
       "DDAY",
+      "DINFO",
+      "DASMET",
     ];
     var regex = /[^0-9]/g;
     Object.keys(apiData).map((data) => {
@@ -263,26 +279,34 @@ export default {
               SIDEEFFECT: "테스트1",
               HOSPITALNM: "☆분당제생병원",
               TREAT: "소화기내과",
-              DCODE0: "d20140228064",
-              DNAME0: "판토록정40(pantoprazole위산분비억제제)",
+              DCODE0: "A1",
+              DNAME0: "아스피린프로텍트(pantoprazole위산분비억제제)",
+              DINFO0: "항혈소판제",
+              DASMET0: "aspirin",
               DQUANTITY0: 1,
               DCOUNT0: 1,
               DDAY0: 56,
               DCHANGE0: "신규추가",
               DCODE1: "d20170103001",
               DNAME1: "가스티인씨알정15(mosapride기능성소화)",
+              DINFO1: "테스트1",
+              DASMET1: "",
               DQUANTITY1: 1,
               DCOUNT1: 1,
               DDAY1: 56,
               DCHANGE1: "신규추가",
-              DCODE2: "d20210711001",
-              DNAME2: "무코스타서방정150(rebamipide위점막보호)",
+              DCODE2: "A3",
+              DNAME2: "메트포민서방정(rebamipide위점막보호)",
+              DINFO2: "테스트2",
+              DASMET2: "metformin",
               DQUANTITY2: 1,
               DCOUNT2: 2,
               DDAY2: 56,
               DCHANGE2: "신규추가",
               DCODE3: "d20140226104",
               DNAME3: "액사딘캡슐150(nizatidine위염)",
+              DINFO3: "테스트3",
+              DASMET3: "",
               DQUANTITY3: 1,
               DCOUNT3: 1,
               DDAY3: 56,
@@ -699,11 +723,11 @@ div {
   border-radius: 5px;
   margin: 10px 5px;
   position: relative;
-  padding-bottom: 18px;
+  padding-bottom: 45px;
 }
 .drug_img {
   margin-right: 7px;
-  margin-top: 3px;
+  margin-top: 5px;
   margin-left: 4px;
 }
 .drug_name {
@@ -743,12 +767,42 @@ div {
   margin-top: 6px;
 }
 
+.comment {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  border-top: 1px solid #eee;
+  width: 95%;
+  padding: 2px 0;
+  margin-bottom: 3px;
+  color: rgb(133, 131, 131);
+}
 .drug_date .margin {
   margin-right: 15px;
 }
 
 .drug_check {
   color: rgb(161, 76, 76);
+}
+.drug_button,
+.drug_check,
+.drug_diff {
+  position: absolute;
+  bottom: 38px;
+  right: 6px;
+  border: 1px solid rgb(209, 209, 209);
+  padding: 0px 6px;
+  border-radius: 4px;
+}
+.drug_check {
+  margin-right: 98px;
+  width: 90px;
+  text-align: center;
+}
+
+.drug_diff {
+  color: rgb(235, 122, 122);
+  padding: 0px 15px;
 }
 
 /* modal */
@@ -848,6 +902,14 @@ div {
   padding-top: 5px;
 }
 
+.modal_padding {
+  padding-bottom: 20px;
+}
+.modal_drug_check,
+.modal_drug_diff {
+  bottom: 10px;
+}
+
 .picto {
   width: 100%;
   display: flex;
@@ -878,25 +940,6 @@ div {
   border: 1px solid #eee;
   font-size: 16px;
   border-radius: 5px;
-}
-.drug_button,
-.drug_check {
-  position: absolute;
-  bottom: 7px;
-  right: 6px;
-  border: 1px solid rgb(209, 209, 209);
-  padding: 0px 6px;
-  border-radius: 4px;
-}
-.drug_check {
-  margin-right: 100px;
-  width: 90px;
-  text-align: center;
-}
-
-.drug_diff {
-  color: rgb(235, 122, 122);
-  padding: 0px 15px;
 }
 
 .footer {
@@ -933,7 +976,7 @@ div {
 }
 .grayline,
 .modal_grayline {
-  border: 1px solid #eee;
+  border: 1px solid rgb(226, 226, 226);
   position: absolute;
   top: 0;
   left: 0;
@@ -945,8 +988,6 @@ div {
 /* media query */
 
 @media screen and (min-width: 367px) and (max-width: 376px) {
-  .drug_img {
-  }
   .drug_check,
   .drug_button {
     font-size: 14px;

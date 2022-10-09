@@ -14,7 +14,7 @@
         · 가장 좋은 약을 선정하는 것에 최선을 다합니다.
       </div>
     </div>
-    <div class="side_effect bgc">
+    <div class="side_effect bgc" v-if="DATA[0].status[0].SIDEEFFECT">
       <div class="side_effect_title">부작용 / 주의성분</div>
       <div>{{ DATA[0].status[0].SIDEEFFECT }}</div>
     </div>
@@ -45,7 +45,80 @@
         </div>
       </div>
     </div>
-
+    <div class="contents_asmet">
+      <div>
+        <div class="contents_asmet_aspirin bgc" v-if="check_aspirin">
+          <div class="contents_asmet_aspirin_title">
+            '출혈주의' <span class="black">할 약품이 있어요 !</span>
+          </div>
+          <div class="contents_asmet_aspirin_info">
+            <div v-if="DATA[0].status[0].DASMET0 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME0 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET1 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME1 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET2 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME2 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET3 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME3 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET4 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME4 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET5 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME5 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET6 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME6 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET7 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME7 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET8 == 'aspirin'">
+              {{ DATA[0].status[0].DNAME8 }}
+            </div>
+          </div>
+        </div>
+        <div class="contents_asmet_metformin bgc" v-if="check_metformin">
+          <div class="contents_asmet_metformin_title">
+            'CT 등 조영제 투여시 주의'<span class="black"
+              >할 약품이 있어요!</span
+            >
+          </div>
+          <div class="contents_asmet_metformin_info">
+            <div v-if="DATA[0].status[0].DASMET0 == 'metformin'">
+              {{ DATA[0].status[0].DNAME0 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET1 == 'metformin'">
+              {{ DATA[0].status[0].DNAME1 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET2 == 'metformin'">
+              {{ DATA[0].status[0].DNAME2 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET3 == 'metformin'">
+              {{ DATA[0].status[0].DNAME3 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET4 == 'metformin'">
+              {{ DATA[0].status[0].DNAME4 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET5 == 'metformin'">
+              {{ DATA[0].status[0].DNAME5 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET6 == 'metformin'">
+              {{ DATA[0].status[0].DNAME6 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET7 == 'metformin'">
+              {{ DATA[0].status[0].DNAME7 }}
+            </div>
+            <div v-if="DATA[0].status[0].DASMET8 == 'metformin'">
+              {{ DATA[0].status[0].DNAME8 }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="contents">
       <!-- <div class="tab"><img src="../img/tap.png" /></div> -->
       <div v-for="(item, i) in data2" v-bind:key="item.id">
@@ -227,6 +300,7 @@ export default {
   mounted() {
     window.scrollTo(0, 0);
 
+    /* 병원명 특수문자 제거 */
     this.DATA[0].status[0].HOSPITALNM =
       this.DATA[0].status[0].HOSPITALNM.replace("☆", "");
     this.DATA[0].status[0].HOSPITALNM =
@@ -235,6 +309,8 @@ export default {
     /* eslint-disable */
     var reg = /\(([^)]+)\)/;
     /* eslint-enable */
+
+    /* json 재정리 */
 
     var apiData = this.DATA[0].status[0];
 
@@ -263,11 +339,83 @@ export default {
 
     console.log(list);
     this.data2 = list;
+
+    this.check_aspirin = this.data2.some((item) => item.DASMET == "aspirin");
+    // console.log(this.check_aspirin);
+
+    this.check_metformin = this.data2.some(
+      (item) => item.DASMET == "metformin"
+    );
+    // console.log(this.check_metformin);
+
+    /* 출혈주의 컨텐츠 괄호삭제 */
     let i;
     for (i = 0; i < 10; i++) {
       if (this.data2[i].DNAME != null)
         this.data2[i].DNAME = this.data2[i].DNAME.replace(reg, "");
     }
+    if (this.DATA[0].status[0].DNAME0 != null) {
+      this.DATA[0].status[0].DNAME0 = this.DATA[0].status[0].DNAME0.replace(
+        reg,
+        ""
+      );
+    }
+    if (this.DATA[0].status[0].DNAME1 != null) {
+      this.DATA[0].status[0].DNAME1 = this.DATA[0].status[0].DNAME1.replace(
+        reg,
+        ""
+      );
+    }
+
+    if (this.DATA[0].status[0].DNAME2 != null) {
+      this.DATA[0].status[0].DNAME2 = this.DATA[0].status[0].DNAME2.replace(
+        reg,
+        ""
+      );
+    }
+
+    if (this.DATA[0].status[0].DNAME3 != null) {
+      this.DATA[0].status[0].DNAME3 = this.DATA[0].status[0].DNAME3.replace(
+        reg,
+        ""
+      );
+    }
+    if (this.DATA[0].status[0].DNAME4 != null) {
+      this.DATA[0].status[0].DNAME4 = this.DATA[0].status[0].DNAME4.replace(
+        reg,
+        ""
+      );
+    }
+
+    if (this.DATA[0].status[0].DNAME5 != null) {
+      this.DATA[0].status[0].DNAME5 = this.DATA[0].status[0].DNAME5.replace(
+        reg,
+        ""
+      );
+    }
+
+    if (this.DATA[0].status[0].DNAME6 != null) {
+      this.DATA[0].status[0].DNAME6 = this.DATA[0].status[0].DNAME6.replace(
+        reg,
+        ""
+      );
+    }
+
+    if (this.DATA[0].status[0].DNAME7 != null) {
+      this.DATA[0].status[0].DNAME7 = this.DATA[0].status[0].DNAME7.replace(
+        reg,
+        ""
+      );
+    }
+
+    if (this.DATA[0].status[0].DNAME8 != null) {
+      this.DATA[0].status[0].DNAME8 = this.DATA[0].status[0].DNAME8.replace(
+        reg,
+        ""
+      );
+    }
+
+    /* axios 연결 */
 
     // var sYYMMDD = "a";
     // var onlyUrl = window.location.href;
@@ -295,6 +443,8 @@ export default {
       modalData: null,
       // aspirin: false,
       // metformin: false,
+      check_aspirin: [],
+      check_metformin: [],
       data2: [],
       DATA: [
         {
@@ -302,7 +452,7 @@ export default {
             {
               code: "r20221006003",
               S_REGDATE: "2022/10/06",
-              SIDEEFFECT: "테스트1",
+              SIDEEFFECT: "알러지",
               HOSPITALNM: "☆분당제생병원",
               TREAT: "소화기내과",
               DCODE0: "A1",
@@ -642,7 +792,9 @@ body {
 div {
   box-sizing: border-box;
 }
-
+.black {
+  color: black;
+}
 /* .overflow {
   overflow: hidden;
   height: 100%;
@@ -665,7 +817,9 @@ div {
 /* info */
 .info,
 .side_effect,
-.greetings {
+.greetings,
+.contents_asmet_aspirin,
+.contents_asmet_metformin {
   border-top: 1px solid #eee;
   border: 1px solid #eee;
   margin-top: 10px;
@@ -678,12 +832,19 @@ div {
 }
 
 .side_effect,
-.greetings {
+.greetings,
+.contents_asmet_aspirin,
+.contents_asmet_metformin {
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 15px;
 }
-
+.contents_asmet_aspirin {
+  border: 1px solid rgb(231, 148, 148);
+}
+.contents_asmet_metformin {
+  border: 1px solid rgb(150, 196, 173);
+}
 .greetings_title {
   display: block;
   margin-bottom: 8px;
@@ -695,12 +856,18 @@ div {
   border-bottom: 1px solid #eee;
   padding: 7px 0;
 }
-.side_effect_title {
+.side_effect_title,
+.contents_asmet_aspirin_title,
+.contents_asmet_metformin_title {
   border-bottom: 1px solid #eee;
   padding-bottom: 5px;
   margin-bottom: 5px;
   color: rgb(73, 107, 172);
   font-size: 16px;
+}
+.contents_asmet_aspirin_info,
+.contents_asmet_ {
+  color: black;
 }
 .info_title {
   display: flex;
